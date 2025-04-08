@@ -1,0 +1,581 @@
+{
+	"info": {
+		"_postman_id": "a1e0d7d0-5e9a-4c0e-8e0e-1d2a3b4c5d6e",
+		"name": "PCCOE ERP API",
+		"description": "API collection for testing the PCCOE ERP system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Student Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"student1@pccoe.edu.in\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/student/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"student",
+								"login"
+							]
+						},
+						"description": "Login as a student"
+					}
+				},
+				{
+					"name": "Teacher Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"teacher1@pccoe.edu.in\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/teacher/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"teacher",
+								"login"
+							]
+						},
+						"description": "Login as a teacher"
+					}
+				},
+				{
+					"name": "Get Student Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/student/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"student",
+								"me"
+							]
+						},
+						"description": "Get current student profile"
+					}
+				},
+				{
+					"name": "Get Teacher Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{teacherToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/teacher/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"teacher",
+								"me"
+							]
+						},
+						"description": "Get current teacher profile"
+					}
+				}
+			],
+			"description": "Authentication endpoints"
+		},
+		{
+			"name": "Leave Requests",
+			"item": [
+				{
+					"name": "Create Leave Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "reason",
+									"value": "Participating in Technical Symposium",
+									"type": "text"
+								},
+								{
+									"key": "eventName",
+									"value": "National Technical Symposium 2023",
+									"type": "text"
+								},
+								{
+									"key": "startDate",
+									"value": "2023-10-15",
+									"type": "text"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-10-16",
+									"type": "text"
+								},
+								{
+									"key": "courseIds",
+									"value": "[\"courseId1\", \"courseId2\"]",
+									"type": "text"
+								},
+								{
+									"key": "documentProof",
+									"type": "file",
+									"src": "/path/to/event_certificate.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/leave-requests",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leave-requests"
+							]
+						},
+						"description": "Create a new leave request"
+					}
+				},
+				{
+					"name": "Get Student Leave Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/leave-requests",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leave-requests"
+							]
+						},
+						"description": "Get all leave requests for the logged-in student"
+					}
+				},
+				{
+					"name": "Get Pending Teacher Leave Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{teacherToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/leave-requests/pending/teacher",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leave-requests",
+								"pending",
+								"teacher"
+							]
+						},
+						"description": "Get pending leave requests for the class teacher"
+					}
+				},
+				{
+					"name": "Get Pending HOD Leave Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{hodToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/leave-requests/pending/hod",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leave-requests",
+								"pending",
+								"hod"
+							]
+						},
+						"description": "Get pending leave requests for the HOD"
+					}
+				},
+				{
+					"name": "Approve Leave Request by Teacher",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{teacherToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comments\": \"Approved. The event seems valuable for the student.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/leave-requests/:id/approve/teacher",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leave-requests",
+								":id",
+								"approve",
+								"teacher"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "leaveRequestId"
+								}
+							]
+						},
+						"description": "Approve leave request by class teacher"
+					}
+				},
+				{
+					"name": "Approve Leave Request by HOD",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{hodToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comments\": \"Approved. Update the attendance records accordingly.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/leave-requests/:id/approve/hod",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leave-requests",
+								":id",
+								"approve",
+								"hod"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "leaveRequestId"
+								}
+							]
+						},
+						"description": "Approve leave request by HOD"
+					}
+				},
+				{
+					"name": "Reject Leave Request",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{teacherToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comments\": \"Rejected due to insufficient documentation.\",\n    \"rejectedBy\": \"teacher\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/leave-requests/:id/reject",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leave-requests",
+								":id",
+								"reject"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "leaveRequestId"
+								}
+							]
+						},
+						"description": "Reject a leave request"
+					}
+				}
+			],
+			"description": "Leave request endpoints"
+		},
+		{
+			"name": "Attendance",
+			"item": [
+				{
+					"name": "Mark Attendance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{teacherToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2023-10-10\",\n    \"presentStudentIds\": [\"studentId1\", \"studentId2\", \"studentId3\"],\n    \"absentStudentIds\": [\"studentId4\", \"studentId5\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance/:courseId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"attendance",
+								":courseId"
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "courseId"
+								}
+							]
+						},
+						"description": "Mark attendance for a course"
+					}
+				},
+				{
+					"name": "Get Course Attendance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{teacherToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance/:courseId?startDate=2023-09-01&endDate=2023-10-31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"attendance",
+								":courseId"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2023-09-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-10-31"
+								}
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "courseId"
+								}
+							]
+						},
+						"description": "Get attendance for a course"
+					}
+				},
+				{
+					"name": "Get Student Attendance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance/student/:studentId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"attendance",
+								"student",
+								":studentId"
+							],
+							"variable": [
+								{
+									"key": "studentId",
+									"value": "studentId"
+								}
+							]
+						},
+						"description": "Get attendance for a student"
+					}
+				},
+				{
+					"name": "Update Student Attendance",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{teacherToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2023-10-10\",\n    \"status\": \"excused\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance/:courseId/student/:studentId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"attendance",
+								":courseId",
+								"student",
+								":studentId"
+							],
+							"variable": [
+								{
+									"key": "courseId",
+									"value": "courseId"
+								},
+								{
+									"key": "studentId",
+									"value": "studentId"
+								}
+							]
+						},
+						"description": "Update attendance status for a student"
+					}
+				}
+			],
+			"description": "Attendance management endpoints"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "studentToken",
+			"value": "your_student_jwt_token",
+			"type": "string"
+		},
+		{
+			"key": "teacherToken",
+			"value": "your_teacher_jwt_token",
+			"type": "string"
+		},
+		{
+			"key": "hodToken",
+			"value": "your_hod_jwt_token",
+			"type": "string"
+		}
+	]
+} 

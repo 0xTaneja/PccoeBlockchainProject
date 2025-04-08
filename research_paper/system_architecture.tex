@@ -1,0 +1,79 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,positioning,shadows,trees}
+
+\begin{document}
+\pagestyle{empty}
+
+\tikzset{
+    basic/.style  = {draw, text width=2cm, drop shadow, font=\sffamily, rectangle},
+    root/.style   = {basic, rounded corners=2pt, thin, align=center, fill=blue!30},
+    level 1/.style = {basic, rounded corners=6pt, thin,align=center, fill=blue!20, text width=8em},
+    level 2/.style = {basic, rounded corners=6pt, thin, align=center, fill=blue!10, text width=7em},
+    level 3/.style = {basic, rounded corners=6pt, thin, align=left, fill=green!10, text width=6.5em},
+    level 4/.style = {basic, rounded corners=6pt, thin, align=left, fill=pink!10, text width=6.5em}
+}
+
+\begin{tikzpicture}[
+    edge from parent/.style = {draw, -latex},
+    scale=0.75,
+    transform shape,
+    every node/.style = {scale=0.75}
+    ]
+    
+    % System Architecture
+    \node[root] {ElizaEdu System}
+    [edge from parent fork down]
+    child {node[level 1] (al) {AI Agent Layer (ElizaOS)}}
+    child {node[level 1] (bl) {Blockchain Layer (Ethereum)}}
+    child {node[level 1] (sl) {Storage Layer (IPFS)}}
+    child {node[level 1] (il) {Integration Layer}};
+    
+    % AI Agent Layer Components
+    \node[level 2, below=0.8cm of al, xshift=-3cm] (rb) {RequestBot};
+    \node[level 2, below=0.8cm of al, xshift=-1cm] (vb) {VerifyBot};
+    \node[level 2, below=0.8cm of al, xshift=1cm] (ab) {ApproveBot};
+    \node[level 2, below=0.8cm of al, xshift=3cm] (eb) {ERPBot};
+    
+    \draw[-latex] (al) -- (rb);
+    \draw[-latex] (al) -- (vb);
+    \draw[-latex] (al) -- (ab);
+    \draw[-latex] (al) -- (eb);
+    
+    % Blockchain Layer Components
+    \node[level 2, below=0.8cm of bl, xshift=-2cm] (sc) {Smart Contracts};
+    \node[level 2, below=0.8cm of bl, xshift=2cm] (at) {Audit Trail};
+    
+    \draw[-latex] (bl) -- (sc);
+    \draw[-latex] (bl) -- (at);
+    
+    % Storage Layer Components
+    \node[level 2, below=0.8cm of sl] (ip) {IPFS Storage};
+    
+    \draw[-latex] (sl) -- (ip);
+    
+    % Integration Layer Components
+    \node[level 2, below=0.8cm of il, xshift=-2cm] (er) {ERP System};
+    \node[level 2, below=0.8cm of il, xshift=2cm] (ui) {User Interface};
+    
+    \draw[-latex] (il) -- (er);
+    \draw[-latex] (il) -- (ui);
+    
+    % User Interface Details
+    \node[level 3, below=0.6cm of ui, xshift=-1cm] (wp) {Web Portal};
+    \node[level 3, below=0.6cm of ui, xshift=1cm] (ma) {Mobile App};
+    
+    \draw[-latex] (ui) -- (wp);
+    \draw[-latex] (ui) -- (ma);
+    
+    % Workflow Connections
+    \draw[-latex, dashed, thick, color=blue] (rb) to[bend right=10] (ip);
+    \draw[-latex, dashed, thick, color=blue] (rb) to[bend right=40] (sc);
+    \draw[-latex, dashed, thick, color=red] (vb) to[bend left=10] (sc);
+    \draw[-latex, dashed, thick, color=red] (ab) to[bend left=30] (sc);
+    \draw[-latex, dashed, thick, color=green] (eb) to[bend right=10] (er);
+    \draw[-latex, dashed, thick, color=green] (eb) to[bend left=30] (at);
+    
+\end{tikzpicture}
+
+\end{document} 
