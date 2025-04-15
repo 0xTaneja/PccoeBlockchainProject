@@ -15,6 +15,7 @@ const {
 } = require('../controllers/leaveRequestController');
 const { authenticate, authorize, isClassTeacher, isHod } = require('../middleware/auth');
 const { uploadLeaveDocument } = require('../utils/fileUpload');
+const LeaveRequest = require('../models/LeaveRequest');
 
 // Student routes
 router.post(
@@ -89,6 +90,7 @@ router.get(
   getLeaveRequestById
 );
 
+// Approval and rejection routes
 router.put(
   '/:id/approve',
   authenticate,

@@ -36,7 +36,10 @@ const TeacherDashboard = ({ user }) => {
 
         // Fetch pending leave requests based on teacher role
         try {
-          // Choose the appropriate endpoint based on teacher role
+          // For debugging: Use the newer endpoint that works
+          const debugEndpoint = '/api/leave-requests/teacher?status=pending';
+          
+          // Regular endpoints based on teacher role (these may not be working correctly yet)
           let endpoint = '/api/leave-requests/teacher?status=pending';
           
           if (teacherProfile.isClassTeacher) {
@@ -45,15 +48,31 @@ const TeacherDashboard = ({ user }) => {
             endpoint = '/api/leave-requests/pending/hod';
           }
           
-          const leaveRequestsResponse = await axios.get(endpoint, {
+          // Temporarily use the debug endpoint that works
+          console.log(`Using debug endpoint to fetch pending leave requests: ${debugEndpoint}`);
+          const leaveRequestsResponse = await axios.get(debugEndpoint, {
             headers: { Authorization: `Bearer ${token}` }
           });
           
           console.log('Leave requests API response:', leaveRequestsResponse.data);
           
-          // Handle response
-          const leaveRequests = leaveRequestsResponse.data.data || [];
-          setPendingLeaveRequests(leaveRequests);
+          // Handle response - ensure we properly extract data from the API response
+          if (leaveRequestsResponse.data && leaveRequestsResponse.data.success) {
+            // Debug logging to understand the structure
+            console.log('Leave requests data structure:', 
+              'data' in leaveRequestsResponse.data ? 'Has data field' : 'No data field',
+              Array.isArray(leaveRequestsResponse.data.data) ? `Data is array with ${leaveRequestsResponse.data.data.length} items` : 'Data is not an array'
+            );
+            
+            // Set the pending leave requests from the data array
+            const leaveRequests = leaveRequestsResponse.data.data || [];
+            setPendingLeaveRequests(leaveRequests);
+            
+            console.log(`Loaded ${leaveRequests.length} pending leave requests`);
+          } else {
+            console.error('Invalid response format from leave requests API:', leaveRequestsResponse.data);
+            setError('Failed to load leave requests. Invalid response format.');
+          }
         } catch (leaveRequestError) {
           console.error('Error fetching leave requests:', leaveRequestError);
           setError('Failed to load leave requests. Please try again later.');
@@ -74,25 +93,26 @@ const TeacherDashboard = ({ user }) => {
     try {
       const token = localStorage.getItem('token');
       
-      // Determine which approval endpoint to use based on teacher role
-      let endpoint = `/api/leave-requests/${id}/approve`;
+      // Use the general approval endpoint rather than role-specific ones
+      const endpoint = `/api/leave-requests/${id}/approve`;
       
-      if (profile.isClassTeacher) {
-        endpoint = `/api/leave-requests/${id}/approve/teacher`;
-      } else if (profile.isHod) {
-        endpoint = `/api/leave-requests/${id}/approve/hod`;
-      }
+      console.log(`Approving leave request using endpoint: ${endpoint}`);
       
-      await axios.put(endpoint, 
-        { comments: 'Approved by teacher' },
+      const response = await axios.put(endpoint, 
+        { comments: 'Approved via teacher dashboard' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
+      console.log('Approval response:', response.data);
+      
       // Update UI
       setPendingLeaveRequests(prev => prev.filter(req => req._id !== id));
+      
+      // Show success message
+      alert('Leave request approved successfully');
     } catch (error) {
       console.error('Error approving leave request:', error);
-      alert('Failed to approve leave request. Please try again.');
+      alert(`Failed to approve leave request: ${error.response?.data?.message || error.message}`);
     } finally {
       setRequestLoading(false);
     }
@@ -102,16 +122,25 @@ const TeacherDashboard = ({ user }) => {
     setRequestLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`/api/leave-requests/${id}/reject`, 
-        { reason: 'Rejected by teacher' },
+      const endpoint = `/api/leave-requests/${id}/reject`;
+      
+      console.log(`Rejecting leave request using endpoint: ${endpoint}`);
+      
+      const response = await axios.put(endpoint, 
+        { reason: 'Rejected via teacher dashboard' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
+      console.log('Rejection response:', response.data);
+      
       // Update UI
       setPendingLeaveRequests(prev => prev.filter(req => req._id !== id));
+      
+      // Show success message
+      alert('Leave request rejected successfully');
     } catch (error) {
       console.error('Error rejecting leave request:', error);
-      alert('Failed to reject leave request. Please try again.');
+      alert(`Failed to reject leave request: ${error.response?.data?.message || error.message}`);
     } finally {
       setRequestLoading(false);
     }
@@ -262,8 +291,8 @@ const TeacherDashboard = ({ user }) => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {pendingLeaveRequests.map((request) => {
                       // Format dates
-                      const fromDate = new Date(request.fromDate).toLocaleDateString();
-                      const toDate = new Date(request.toDate).toLocaleDateString();
+                      const fromDate = new Date(request.startDate).toLocaleDateString();
+                      const toDate = new Date(request.endDate).toLocaleDateString();
                       
                       return (
                         <tr key={request._id}>
@@ -277,7 +306,7 @@ const TeacherDashboard = ({ user }) => {
                                   {request.student?.email || 'No email'}
                                 </div>
                                 <div className="text-xs text-gray-500">
-                                  {request.student?.rollNo || 'No Roll No'} • {request.student?.branch?.name || 'Unknown Branch'}
+                                  {request.student?.rollNo || 'No Roll No'} • {request.student?.department || 'Unknown Department'}
                                 </div>
                               </div>
                             </div>
@@ -286,16 +315,27 @@ const TeacherDashboard = ({ user }) => {
                             <div className="text-sm text-gray-900">{fromDate}</div>
                             <div className="text-sm text-gray-500">to {toDate}</div>
                             <div className="text-xs text-gray-500">
-                              {request.totalDays} day{request.totalDays !== 1 ? 's' : ''}
+                              {request.days} day{request.days !== 1 ? 's' : ''}
                             </div>
                           </td>
                           <td className="px-6 py-4">
                             <div className="text-sm text-gray-900">{request.reason}</div>
+                            <div className="text-xs text-gray-500">{request.eventName || 'No event name'}</div>
+                            <div className="text-xs text-gray-500">{request.leaveType || 'Not specified'}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {request.documentUrl ? (
+                            {request.ipfsDocLink ? (
                               <a 
-                                href={request.documentUrl} 
+                                href={request.ipfsDocLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center text-sm text-blue-600 hover:text-blue-900"
+                              >
+                                <FiFileText className="mr-1" /> View
+                              </a>
+                            ) : request.documentProof ? (
+                              <a 
+                                href={`/uploads/${request.documentProof.split('/').pop()}`} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center text-sm text-blue-600 hover:text-blue-900"

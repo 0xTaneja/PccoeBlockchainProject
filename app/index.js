@@ -6,6 +6,7 @@ const config = require('./config');
 const connectDB = require('./db');
 const telegramService = require('./utils/telegramService');
 const leaveRequestController = require('./controllers/leaveRequestController');
+const LeaveRequest = require('./models/LeaveRequest');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
