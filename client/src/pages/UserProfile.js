@@ -16,10 +16,10 @@ const UserProfile = ({ user }) => {
           throw new Error('Authentication token not found');
         }
         
-        // Determine the correct endpoint based on user type
+        // Determine the correct endpoint based on user type - these were wrong before
         const endpoint = user.student 
-          ? '/api/students/profile' 
-          : '/api/teachers/profile';
+          ? '/api/auth/student/me' 
+          : '/api/auth/teacher/me';
         
         const response = await axios.get(endpoint, {
           headers: {
@@ -27,7 +27,13 @@ const UserProfile = ({ user }) => {
           }
         });
         
-        setProfile(response.data);
+        // The data structure from the API is different than previously expected
+        if (user.student) {
+          setProfile(response.data.student);
+        } else {
+          setProfile(response.data.teacher);
+        }
+        
         setLoading(false);
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -61,7 +67,7 @@ const UserProfile = ({ user }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Phone</label>
-                <div className="mt-1 text-sm text-gray-900">{userData.phone || 'Not provided'}</div>
+                <div className="mt-1 text-sm text-gray-900">{userData.mobileNumber || 'Not provided'}</div>
               </div>
             </div>
           </div>
@@ -70,15 +76,19 @@ const UserProfile = ({ user }) => {
             <div className="mt-4 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-500">Student ID</label>
-                <div className="mt-1 text-sm text-gray-900">{userData.studentId || userData.rollNo}</div>
+                <div className="mt-1 text-sm text-gray-900">{userData.studentId}</div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Department</label>
                 <div className="mt-1 text-sm text-gray-900">{userData.department}</div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-500">Year & Section</label>
-                <div className="mt-1 text-sm text-gray-900">Year {userData.year}, Section {userData.section}</div>
+                <label className="block text-sm font-medium text-gray-500">Year & Division</label>
+                <div className="mt-1 text-sm text-gray-900">Year {userData.year}, Division {userData.division}</div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Roll Number</label>
+                <div className="mt-1 text-sm text-gray-900">{userData.rollNumber}</div>
               </div>
             </div>
           </div>
@@ -100,7 +110,7 @@ const UserProfile = ({ user }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Phone</label>
-                <div className="mt-1 text-sm text-gray-900">{userData.phone || 'Not provided'}</div>
+                <div className="mt-1 text-sm text-gray-900">{userData.mobileNumber || 'Not provided'}</div>
               </div>
             </div>
           </div>
@@ -109,7 +119,7 @@ const UserProfile = ({ user }) => {
             <div className="mt-4 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-500">Teacher ID</label>
-                <div className="mt-1 text-sm text-gray-900">{userData.teacherId || userData.employeeId}</div>
+                <div className="mt-1 text-sm text-gray-900">{userData.employeeId}</div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Department</label>
@@ -165,6 +175,14 @@ const UserProfile = ({ user }) => {
             ) : error ? (
               <div className="text-center py-4 text-red-500">
                 {error}
+                <div className="mt-2">
+                  <button 
+                    onClick={() => window.location.reload()}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                  >
+                    Try Again
+                  </button>
+                </div>
               </div>
             ) : (
               displayUserInfo()
