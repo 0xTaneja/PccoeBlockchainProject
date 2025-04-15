@@ -41,6 +41,9 @@ const Navbar = ({ user, onLogout }) => {
                 <Link to="/teacher/attendance" className="px-3 py-2 hover:bg-blue-700 rounded">
                   Attendance
                 </Link>
+                <Link to="/teacher/leave" className="px-3 py-2 hover:bg-blue-700 rounded">
+                  Leave Requests
+                </Link>
               </>
             )}
             
@@ -149,6 +152,13 @@ const Navbar = ({ user, onLogout }) => {
                   onClick={() => setIsOpen(false)}
                 >
                   Attendance
+                </Link>
+                <Link
+                  to="/teacher/leave"
+                  className="block px-3 py-2 hover:bg-blue-700 rounded"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Leave Requests
                 </Link>
               </>
             )}

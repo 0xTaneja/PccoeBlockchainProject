@@ -1,152 +1,161 @@
-# PCCOE ERP System with ElizaEdu Integration
+# ElizaEdu: AI + Web3 Attendance Verification System
 
-This repository contains a comprehensive Educational ERP system for Pimpri Chinchwad College of Engineering with ElizaEdu, an AI-powered Web3 system for automated event attendance verification.
-
-## Repository Structure
-
-- `app/` - Backend API built with Node.js and Express
-- `client/` - Frontend application built with React
-- `research_paper/` - LaTeX files for the ElizaEdu research paper
-
-## System Requirements
-
-- Node.js (v14 or higher)
-- MongoDB
-- npm or yarn
-
-## Installation and Setup
-
-### Clone the repository
-
-```bash
-git clone https://github.com/Sarthaknimje/erp.git
-cd erp
-```
-
-### Backend Setup
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Configure environment variables:
-```bash
-cp .env.example .env
-```
-Edit `.env` file with your MongoDB connection string and other configurations.
-
-3. Seed the database:
-```bash
-npm run seed
-```
-
-4. Start the backend server:
-```bash
-npm run dev
-```
-The server will run on http://localhost:3001 by default.
-
-### Frontend Setup
-
-1. Navigate to the client directory:
-```bash
-cd client
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the frontend development server:
-```bash
-npm start
-```
-The application will run on http://localhost:3000.
-
-### Running Both Frontend and Backend
-
-To run both the frontend and backend concurrently:
-```bash
-npm run dev:full
-```
-
-## Login Credentials
-
-### Student Login
-- Email: student1@pccoe.edu.in
-- Password: password123
-
-### Teacher Login
-- Email: teacher1@pccoe.edu.in
-- Password: password123
-
-### Class Teacher Login
-- Email: classteacher1@pccoe.edu.in
-- Password: password123
-
-### HOD Login
-- Email: hod.computerengineering@pccoe.edu.in
-- Password: password123
-
-## API Documentation
-
-API documentation is available in the Postman collection file: `pccoe-erp-api.postman.json`
-
-## ElizaEdu Research Paper
-
-The `research_paper/` directory contains LaTeX source files for the research paper "ElizaEdu: AI-powered Web3 System for Automated, Secure Event Attendance Verification."
-
-### Compiling the Research Paper
-
-1. Install LaTeX on your system or use Overleaf.
-2. Compile the diagrams first:
-```bash
-pdflatex research_paper/system_architecture.tex
-pdflatex research_paper/workflow_diagram.tex
-```
-3. Compile the main paper:
-```bash
-pdflatex research_paper/ElizaEdu_Paper.tex
-```
+ElizaEdu is a multi-agent AI system for automated event-based leave approval and ERP attendance updates with blockchain verification.
 
 ## Features
 
-- **Authentication System**: Secure login for students, teachers, and administrators
-- **Student Dashboard**: View attendance, course information, and submit leave requests
-- **Teacher Dashboard**: Manage courses, track student attendance, and approve leave requests
-- **Leave Management**: Submit, track, and approve leave requests with document verification
-- **ElizaEdu Integration**: AI-powered document verification and blockchain-based approval system
+- **Student Leave Request Submission**
+  - Upload event proof (certificate, invitation) via Telegram or Web UI
+  - AI-powered document information extraction
+  - Document storage on IPFS (Pinata)
+  - Document verification on Solana blockchain
 
-## Technologies Used
+- **Teacher Verification**
+  - AI pre-checks document authenticity and student data
+  - Teacher receives verification request via Telegram
+  - Approval/rejection recorded on blockchain
 
-### Backend
-- Node.js
-- Express
+- **HOD Approval**
+  - HOD receives verified documents for final approval
+  - Approval signature stored on blockchain
+  - Triggers attendance update
+
+- **ERP Update**
+  - Automatic attendance record updates
+  - Confirmation notifications via Telegram
+  - Complete approval history stored in MongoDB and IPFS
+
+## Technology Stack
+
+- **Backend**: Node.js, Express
+- **Database**: MongoDB
+- **Blockchain**: Solana (JSON RPC)
+- **Storage**: IPFS (Pinata)
+- **AI**: OpenAI GPT-4 Vision for document analysis
+- **Messaging**: Telegram Bot API
+- **Frontend**: React with Tailwind CSS
+
+## Architecture
+
+The system is built around 4 Eliza bots:
+
+1. **ElizaRequestBot**: 
+   - Extracts information from uploaded documents using AI
+   - Uploads documents to IPFS
+   - Generates document hash and stores on Solana blockchain
+
+2. **ElizaVerifyBot**:
+   - Verifies document information against student data
+   - Notifies class teacher via Telegram
+   - Records teacher approval on blockchain
+
+3. **ElizaApproveBot**:
+   - Manages HOD approval flow
+   - Records final signature on blockchain
+   - Triggers ERP update
+
+4. **ElizaERPBot**:
+   - Updates attendance records in the ERP system
+   - Sends confirmation notifications
+   - Maintains approval history
+
+## Setup
+
+### Prerequisites
+
+- Node.js v14+
 - MongoDB
-- JWT Authentication
+- Solana account (for blockchain operations)
+- Pinata account (for IPFS storage)
+- OpenAI API key
+- Telegram Bot token
 
-### Frontend
-- React
-- Tailwind CSS
-- Axios
+### Environment Variables
 
-### ElizaEdu Components
-- Ethereum Blockchain
-- ElizaOS (AI Agents)
-- IPFS
+Create a `.env` file with the following variables:
+
+```
+PORT=3001
+MONGODB_URI=mongodb://localhost:27017/pccoe-erp
+JWT_SECRET=your_jwt_secret_key_here
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-email-app-password
+NODE_ENV=development
+
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Pinata IPFS Configuration
+PINATA_API_KEY=your_pinata_api_key_here
+PINATA_SECRET_KEY=your_pinata_secret_key_here
+
+# Solana Configuration
+SOLANA_RPC_URL=https://api.devnet.solana.com
+SOLANA_PRIVATE_KEY=your_solana_private_key_here
+
+# Telegram Bot Configuration
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+```
+
+### Installation
+
+1. Clone the repository
+```
+git clone https://github.com/your-username/elizaedu.git
+cd elizaedu
+```
+
+2. Install dependencies
+```
+npm install
+cd client
+npm install
+cd ..
+```
+
+3. Start the development server
+```
+npm run dev:full
+```
+
+This will start both the backend server and the React frontend.
+
+## API Endpoints
+
+### Authentication
+
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login a user
+
+### Leave Requests
+
+- `POST /api/leave-requests` - Create a new leave request
+- `GET /api/leave-requests` - Get all leave requests for a student
+- `GET /api/leave-requests/pending/teacher` - Get pending teacher leave requests
+- `GET /api/leave-requests/pending/hod` - Get pending HOD leave requests
+- `PUT /api/leave-requests/:id/approve/teacher` - Approve leave request by teacher
+- `PUT /api/leave-requests/:id/approve/hod` - Approve leave request by HOD
+- `PUT /api/leave-requests/:id/reject` - Reject leave request
+
+### Blockchain
+
+- `GET /api/blockchain/verify/:transactionSignature` - Verify document hash on blockchain
+
+## Telegram Bot Commands
+
+- `/start` - Start the bot
+- `/login` - Login with your student ID
+- `/request` - Submit a new leave request
+- `/status` - Check status of your leave requests
+- `/help` - Show help message
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT
 
 ## Contributors
 
-- Sarthak Nimje
-- Rushab Taneja
-- Om Baviskar
-- Dr. Rachana Patil
+- Rushab
 
 ## Contact
 

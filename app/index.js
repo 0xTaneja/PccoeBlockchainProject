@@ -4,11 +4,14 @@ const morgan = require('morgan');
 const path = require('path');
 const config = require('./config');
 const connectDB = require('./db');
+const telegramService = require('./utils/telegramService');
+const leaveRequestController = require('./controllers/leaveRequestController');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
 const leaveRequestRoutes = require('./routes/leaveRequestRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
+const blockchainRoutes = require('./routes/blockchainRoutes');
 
 // Initialize express app
 const app = express();
@@ -33,6 +36,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/leave-requests', leaveRequestRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/blockchain', blockchainRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -42,6 +46,46 @@ app.get('/', (req, res) => {
     version: '1.0.0'
   });
 });
+
+// Initialize Telegram bot
+if (config.telegram.botToken) {
+  try {
+    telegramService.initBot({
+      verifyStudent: leaveRequestController.verifyStudent,
+      createLeaveRequest: leaveRequestController.createLeaveRequestFromTelegram,
+      getStudentLeaveRequests: async (studentId) => {
+        const requests = await leaveRequestController.getStudentLeaveRequests(
+          { user: { id: studentId } },
+          { status: () => ({ json: (data) => data }) }
+        );
+        return requests?.data || [];
+      },
+      approveLeaveRequestByTeacher: async (requestId, teacherId) => {
+        await leaveRequestController.approveLeaveRequestByTeacher(
+          { user: { id: teacherId }, params: { id: requestId }, body: {} },
+          { status: () => ({ json: () => {} }) }
+        );
+      },
+      approveLeaveRequestByHod: async (requestId, hodId) => {
+        await leaveRequestController.approveLeaveRequestByHod(
+          { user: { id: hodId }, params: { id: requestId }, body: {} },
+          { status: () => ({ json: () => {} }) }
+        );
+      },
+      rejectLeaveRequest: async (requestId, teacherId) => {
+        await leaveRequestController.rejectLeaveRequest(
+          { user: { id: teacherId }, params: { id: requestId }, body: {} },
+          { status: () => ({ json: () => {} }) }
+        );
+      }
+    });
+    console.log('Telegram bot initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize Telegram bot:', error);
+  }
+} else {
+  console.warn('Telegram bot token not provided, bot not initialized');
+}
 
 // 404 route
 app.use((req, res) => {
@@ -55,6 +99,17 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   
+  // Handle OpenAI API errors
+  if (err.name === 'APIError' || (err.message && err.message.includes('OpenAI'))) {
+    console.error('OpenAI API Error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'AI service is currently unavailable. Your request has been processed, but without AI verification.',
+      error: err.message
+    });
+  }
+  
+  // Handle other errors
   res.status(500).json({
     success: false,
     message: err.message || 'Internal Server Error'

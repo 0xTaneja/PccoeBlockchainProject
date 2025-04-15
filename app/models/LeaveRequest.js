@@ -6,6 +6,12 @@ const leaveRequestSchema = new mongoose.Schema({
     ref: 'Student',
     required: true
   },
+  leaveType: {
+    type: String,
+    enum: ['Sick', 'Personal', 'Academic', 'Family', 'Other'],
+    default: 'Other',
+    required: true
+  },
   reason: {
     type: String,
     required: true,
@@ -23,6 +29,11 @@ const leaveRequestSchema = new mongoose.Schema({
   endDate: {
     type: Date,
     required: true
+  },
+  days: {
+    type: Number,
+    required: true,
+    min: 1
   },
   documentProof: {
     type: String, // Path to uploaded document
@@ -68,6 +79,29 @@ const leaveRequestSchema = new mongoose.Schema({
   ipfsDocLink: {
     type: String,
     trim: true
+  },
+  verificationResult: {
+    verified: {
+      type: Boolean,
+      default: false
+    },
+    confidence: {
+      type: Number,
+      default: 0
+    },
+    reasoning: {
+      type: String,
+      default: ''
+    },
+    recommendedAction: {
+      type: String,
+      enum: ['approve', 'request_more_info', 'reject'],
+      default: 'request_more_info'
+    },
+    ipfsLink: {
+      type: String,
+      trim: true
+    }
   }
 }, {
   timestamps: true

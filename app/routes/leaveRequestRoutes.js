@@ -7,7 +7,11 @@ const {
   getPendingHodLeaveRequests,
   approveLeaveRequestByTeacher,
   approveLeaveRequestByHod,
-  rejectLeaveRequest
+  rejectLeaveRequest,
+  getLeaveRequestById,
+  getTeacherLeaveRequests,
+  approveLeaveRequest,
+  getAllStudentLeaveRequests
 } = require('../controllers/leaveRequestController');
 const { authenticate, authorize, isClassTeacher, isHod } = require('../middleware/auth');
 const { uploadLeaveDocument } = require('../utils/fileUpload');
@@ -18,6 +22,11 @@ router.post(
   authenticate, 
   authorize('student'), 
   uploadLeaveDocument.single('documentProof'),
+  (req, res, next) => {
+    console.log('Received leave request body:', req.body);
+    console.log('Received file:', req.file);
+    next();
+  },
   createLeaveRequest
 );
 router.get(
@@ -25,6 +34,20 @@ router.get(
   authenticate, 
   authorize('student'), 
   getStudentLeaveRequests
+);
+
+// New teacher routes for leave management
+router.get(
+  '/teacher',
+  authenticate,
+  authorize('teacher'),
+  getTeacherLeaveRequests
+);
+router.get(
+  '/student',
+  authenticate,
+  authorize('student'),
+  getAllStudentLeaveRequests
 );
 
 // Teacher routes
@@ -59,11 +82,23 @@ router.put(
   approveLeaveRequestByHod
 );
 
-// Common teacher/HOD route
+// Generic ID route - should come after specific routes
+router.get(
+  '/:id',
+  authenticate,
+  getLeaveRequestById
+);
+
 router.put(
-  '/:id/reject', 
-  authenticate, 
-  authorize('teacher'), 
+  '/:id/approve',
+  authenticate,
+  authorize('teacher'),
+  approveLeaveRequest
+);
+router.put(
+  '/:id/reject',
+  authenticate,
+  authorize('teacher'),
   rejectLeaveRequest
 );
 
