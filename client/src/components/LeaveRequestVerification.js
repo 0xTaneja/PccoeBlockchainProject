@@ -11,14 +11,30 @@ const LeaveRequestVerification = ({ leaveRequestId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Get authentication token
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setError('Authentication token not found. Please log in again.');
+          setLoading(false);
+          return;
+        }
+
         // Fetch leave request data
-        const response = await axios.get(`/api/leave-requests/${leaveRequestId}`);
+        const response = await axios.get(`/api/leave-requests/${leaveRequestId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         setLeaveRequest(response.data.data);
         
         // Fetch blockchain verification if hash exists
         if (response.data.data.blockchainHash) {
           try {
-            const verificationResponse = await axios.get(`/api/blockchain/verify/${response.data.data.blockchainHash}`);
+            const verificationResponse = await axios.get(`/api/blockchain/verify/${response.data.data.blockchainHash}`, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
             setVerificationData(verificationResponse.data);
           } catch (verifyError) {
             console.error('Error fetching blockchain verification:', verifyError);
@@ -27,7 +43,8 @@ const LeaveRequestVerification = ({ leaveRequestId }) => {
         
         setLoading(false);
       } catch (err) {
-        setError(err.message || 'Failed to fetch leave request data');
+        console.error('Error fetching leave request data:', err);
+        setError(err.response?.data?.message || err.message || 'Failed to fetch leave request data');
         setLoading(false);
       }
     };

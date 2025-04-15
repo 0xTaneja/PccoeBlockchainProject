@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import LeaveRequestForm from '../components/LeaveRequestForm';
+import LeaveRequestVerification from '../components/LeaveRequestVerification';
 
 const StudentLeave = ({ user }) => {
   const [leaveRequests, setLeaveRequests] = useState([]);
@@ -131,75 +132,50 @@ const StudentLeave = ({ user }) => {
               </div>
               
               <div>
-                <h5 className="text-sm font-medium text-gray-500 mb-2">Document Verification</h5>
-                <div className="bg-gray-50 rounded-md p-4 space-y-3">
-                  {request.blockchainHash ? (
+                <h5 className="text-sm font-medium text-gray-500 mb-2">Document</h5>
+                <div className="bg-gray-50 rounded-md p-4">
+                  {request.documentProof ? (
                     <>
-                      <div>
-                        <span className="text-xs text-gray-500 block">Document Hash</span>
-                        <span className="text-sm font-mono break-all">{request.blockchainHash}</span>
-                      </div>
-                      {request.ipfsDocLink && (
-                        <div>
-                          <span className="text-xs text-gray-500 block">IPFS Link</span>
-                          <a 
-                            href={request.ipfsDocLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="text-sm text-indigo-600 hover:text-indigo-800 font-mono break-all"
-                          >
-                            {request.ipfsDocLink}
-                          </a>
-                        </div>
+                      {request.ipfsDocLink ? (
+                        <a 
+                          href={request.ipfsDocLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          View Document
+                        </a>
+                      ) : (
+                        <a 
+                          href={`/uploads/${request.documentProof.split('/').pop()}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          View Document
+                        </a>
                       )}
                     </>
                   ) : (
-                    <div className="text-sm text-gray-600">No blockchain verification available</div>
+                    <div className="text-sm text-gray-600">No document uploaded</div>
                   )}
                 </div>
               </div>
             </div>
             
-            {request.verificationResult && (
-              <div className="mb-6">
-                <h5 className="text-sm font-medium text-gray-500 mb-2">AI Verification Results</h5>
-                <div className={`rounded-md p-4 ${
-                  request.verificationResult.verified 
-                    ? request.verificationResult.confidence > 80 
-                      ? 'bg-green-50' 
-                      : 'bg-yellow-50' 
-                    : 'bg-red-50'
-                }`}>
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0">
-                      {request.verificationResult.verified ? (
-                        <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      ) : (
-                        <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                    </div>
-                    <div className="ml-3">
-                      <h6 className="text-sm font-medium">
-                        {request.verificationResult.verified 
-                          ? `Event verified with ${request.verificationResult.confidence}% confidence` 
-                          : `Verification issues detected (${request.verificationResult.confidence}% confidence)`
-                        }
-                      </h6>
-                      <p className="text-sm mt-1">{request.verificationResult.reasoning}</p>
-                      {request.verificationResult.recommendedAction && (
-                        <p className="text-sm mt-1">
-                          <strong>Recommended action:</strong> {request.verificationResult.recommendedAction.replace(/_/g, ' ')}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+            {/* Verification section */}
+            <div className="mb-6">
+              <h5 className="text-sm font-medium text-gray-500 mb-2">Verification Details</h5>
+              <div className="bg-gray-50 rounded-md p-4">
+                <LeaveRequestVerification leaveRequestId={request._id} />
               </div>
-            )}
+            </div>
             
             {(request.classTeacherApproval?.approved || request.classTeacherApproval?.approved === false) && (
               <div className="mb-4">
