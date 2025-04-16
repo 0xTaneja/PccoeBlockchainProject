@@ -1,4 +1,4 @@
-# ElizaEdu: AI + Web3 Attendance Verification System
+# ElizaEdu: AI + Web3 Attendance Verification System (Blockchain)
 
 ElizaEdu is a multi-agent AI system for automated event-based leave approval and ERP attendance updates with blockchain verification.
 
