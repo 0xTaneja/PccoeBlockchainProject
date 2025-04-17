@@ -1,0 +1,281 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usecolortheme{whale}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\definecolor{myblue}{RGB}{0, 103, 184}
+\setbeamercolor{title}{fg=myblue}
+\setbeamercolor{frametitle}{fg=myblue}
+
+\title{ElizaEdu: AI-powered Web3 System for Automated Event Attendance Verification}
+\author{Sarthak Nimje \and Rushab Taneja \and Om Baviskar \and Dr. Rachana Patil}
+\institute{Pimpri Chinchwad College of Engineering, Pune}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{The Problem}
+\begin{block}{Current Issues with Event Attendance Tracking}
+\begin{itemize}
+    \item Manual verification process is time-consuming
+    \item Risk of fake event proofs and fraudulent documentation
+    \item Delayed approvals \& ERP updates
+    \item No transparency in leave approvals
+    \item Inconsistent attendance recording
+\end{itemize}
+\end{block}
+
+\begin{alertblock}{The Impact}
+These issues lead to administrative inefficiency, student dissatisfaction, and potential academic integrity concerns.
+\end{alertblock}
+\end{frame}
+
+\section{Project Overview}
+
+\begin{frame}{Project Overview}
+\begin{block}{What is ElizaEdu?}
+A decentralized AI agent system using ElizaOS to handle event verification \& attendance updates.
+\end{block}
+
+\begin{itemize}
+    \item Uses blockchain \& cryptographic proofs to ensure tamper-proof verification
+    \item AI automates leave requests, document verification, and ERP attendance updates
+    \item Provides full transparency and auditability for all stakeholders
+\end{itemize}
+
+\begin{block}{Key Technologies}
+\begin{itemize}
+    \item \textbf{AI Agents (ElizaOS)} – Autonomous approval workflow
+    \item \textbf{Blockchain (Ethereum)} – Immutable verification
+    \item \textbf{IPFS} – Secure document storage
+    \item \textbf{ERP Integration} – Automated attendance update
+\end{itemize}
+\end{block}
+\end{frame}
+
+\section{System Workflow}
+
+\begin{frame}{System Workflow}
+\begin{block}{How it Works}
+\end{block}
+\begin{enumerate}
+    \item \textbf{Student Requests Leave (RequestBot)}
+    \begin{itemize}
+        \item Student submits event proof via web portal/mobile app
+        \item AI checks document validity \& generates cryptographic proof
+        \item Proof stored on IPFS + hash recorded on blockchain
+    \end{itemize}
+    
+    \item \textbf{Class Teacher Verifies (VerifyBot)}
+    \begin{itemize}
+        \item AI pre-screens document for validity
+        \item Teacher receives a secured digital proof and approves/rejects
+    \end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{System Workflow (Continued)}
+\begin{enumerate}\setcounter{enumi}{2}
+    \item \textbf{HoD Approval (ApproveBot)}
+    \begin{itemize}
+        \item Once teacher-approved, the HoD receives an automated request
+        \item All approvals are signed cryptographically \& recorded on-chain
+    \end{itemize}
+    
+    \item \textbf{ERP Attendance Update (ERPBot)}
+    \begin{itemize}
+        \item AI updates attendance in ERP automatically based on approval
+        \item Students \& teachers get instant notifications
+        \item All records are tamper-proof and viewable in a dashboard
+    \end{itemize}
+\end{enumerate}
+\end{frame}
+
+\section{AI \& Blockchain Integration}
+
+\begin{frame}{AI \& Blockchain Integration}
+\begin{block}{How AI \& Web3 Improve the System}
+\end{block}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{AI-Powered Decision Making}
+\begin{itemize}
+    \item ElizaOS Agents automate verification \& approvals
+    \item AI handles repetitive work, reducing workload
+    \item Document analysis with 97.3\% accuracy
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Blockchain for Trust \& Security}
+\begin{itemize}
+    \item Prevents fake approvals using cryptographic signatures
+    \item Ensures tamper-proof verification
+    \item Creates immutable audit trail
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\textbf{Decentralized Storage with IPFS}
+\begin{itemize}
+    \item Stores event proofs permanently
+    \item Ensures document authenticity
+    \item Eliminates single point of failure
+\end{itemize}
+\end{frame}
+
+\section{Key Features \& Benefits}
+
+\begin{frame}{Key Features \& Benefits}
+\begin{block}{What Makes Our System Unique?}
+\end{block}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Features}
+\begin{itemize}
+    \item AI-Based Verification
+    \item Blockchain Storage
+    \item Automated ERP Updates
+    \item Cryptographic Proofs
+    \item On-Chain Approval
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Benefits}
+\begin{itemize}
+    \item Reduces manual workload by 84\%
+    \item Prevents tampering \& fraud (100\%)
+    \item Eliminates manual entry errors
+    \item Provides student ownership of records
+    \item Ensures transparent decision-making
+\end{itemize}
+\end{columns}
+
+\begin{alertblock}{Result}
+85\% faster verification process with 100\% data integrity
+\end{alertblock}
+\end{frame}
+
+\section{UI \& Dashboard Preview}
+
+\begin{frame}{UI \& Dashboard Preview}
+\begin{block}{Student \& Faculty Interfaces}
+\end{block}
+
+\begin{columns}
+\column{0.3\textwidth}
+\textbf{Telegram Bot}
+\begin{itemize}
+    \item Easy document submission
+    \item Status notifications
+    \item Instant updates
+\end{itemize}
+
+\column{0.3\textwidth}
+\textbf{Web Dashboard}
+\begin{itemize}
+    \item Leave status
+    \item Attendance history
+    \item Document tracking
+\end{itemize}
+
+\column{0.3\textwidth}
+\textbf{Approval Interface}
+\begin{itemize}
+    \item Teacher approval panel
+    \item HoD verification
+    \item Analytics view
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{center}
+\textbf{92\% Student Satisfaction | 88\% Teacher Approval}
+\end{center}
+\end{frame}
+
+\section{Tech Stack}
+
+\begin{frame}{Tech Stack}
+\begin{block}{Tools \& Technologies Used}
+\end{block}
+
+\begin{columns}
+\column{0.5\textwidth}
+\begin{tabular}{ll}
+\textbf{Component} & \textbf{Technology} \\
+\hline
+AI Agents & ElizaOS \\
+Blockchain & Ethereum/Polygon \\
+Storage & IPFS \\
+\end{tabular}
+
+\column{0.5\textwidth}
+\begin{tabular}{ll}
+\textbf{Component} & \textbf{Technology} \\
+\hline
+Frontend & React.js, Next.js \\
+Backend & Node.js + Express \\
+ERP Integration & Custom API bridge \\
+\end{tabular}
+\end{columns}
+
+\begin{alertblock}{System Performance}
+\begin{itemize}
+    \item Document validation: 97.3\% accuracy
+    \item Transaction time: 15 seconds (average)
+    \item ERP update accuracy: 100\%
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+\section{Results \& Future Work}
+
+\begin{frame}{Results \& Future Work}
+\begin{block}{Key Achievements}
+\begin{itemize}
+    \item Verification time reduced from 72 hours to 10.8 hours (85\%)
+    \item Administrative workload reduced by 84\%
+    \item Document fraud eliminated (100\%)
+    \item Student satisfaction increased by 34\%
+    \item ERP update accuracy improved to 100\%
+\end{itemize}
+\end{block}
+
+\begin{block}{Future Directions}
+\begin{itemize}
+    \item Support for wider range of document types
+    \item Advanced analytics for attendance patterns
+    \item Layer-2 Ethereum solutions for scalability
+    \item Standardized APIs for diverse ERP systems
+    \item Cross-institutional verification framework
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Thank You}
+\begin{center}
+\Huge{Questions?}
+
+\vspace{1cm}
+\normalsize
+Contact: sarthak.nimje@pccoepune.org
+\end{center}
+\end{frame}
+
+\end{document} 

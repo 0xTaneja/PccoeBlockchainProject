@@ -1,0 +1,84 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
+
+\begin{document}
+\pagestyle{empty}
+
+\tikzset{
+    block/.style={rectangle, draw, fill=blue!20, 
+        text width=8em, text centered, rounded corners, minimum height=3em},
+    line/.style={draw, -latex},
+    cloud/.style={draw, ellipse, fill=red!20, 
+        minimum height=2em},
+    agent/.style={draw, ellipse, fill=green!20, 
+        minimum width=2.5cm, minimum height=1.5cm},
+    storage/.style={draw, cylinder, shape border rotate=90, 
+        fill=yellow!20, minimum height=2cm, minimum width=1.5cm},
+    user/.style={draw, circle, fill=purple!20, 
+        minimum size=1.5cm}
+}
+
+\begin{tikzpicture}[node distance=1.5cm, auto]
+    % Users
+    \node [user] (student) {Student};
+    \node [user, right=4cm of student] (teacher) {Class Teacher};
+    \node [user, right=4cm of teacher] (hod) {HoD};
+    
+    % Agents
+    \node [agent, below=1.5cm of student] (requestbot) {RequestBot};
+    \node [agent, below=1.5cm of teacher] (verifybot) {VerifyBot};
+    \node [agent, below=1.5cm of hod] (approvebot) {ApproveBot};
+    \node [agent, below=3cm of verifybot] (erpbot) {ERPBot};
+    
+    % Storage
+    \node [storage, right=1.5cm of requestbot] (ipfs) {IPFS};
+    \node [storage, below=1.5cm of ipfs] (blockchain) {Ethereum Blockchain};
+    
+    % ERP System
+    \node [block, right=3cm of erpbot] (erp) {ERP System};
+    
+    % Workflow
+    \node [block, left=1.5cm of requestbot] (submit) {1. Submit Event Document};
+    \node [block, below=1cm of requestbot] (validate) {2. Validate Document};
+    \node [block, below=1cm of teacher] (approve1) {3. Teacher Approval};
+    \node [block, below=1cm of hod] (approve2) {4. HoD Approval};
+    \node [block, left=1.5cm of erpbot] (update) {5. Update Attendance};
+    
+    % Connections
+    \path [line] (student) -- (submit);
+    \path [line] (submit) -- (requestbot);
+    \path [line] (requestbot) -- (validate);
+    \path [line] (requestbot) -- (ipfs);
+    \path [line] (requestbot) -- (blockchain);
+    \path [line] (validate) edge[bend left=20] (verifybot);
+    \path [line] (verifybot) -- (teacher);
+    \path [line] (teacher) -- (approve1);
+    \path [line] (approve1) -- (blockchain);
+    \path [line] (approve1) edge[bend left=20] (approvebot);
+    \path [line] (approvebot) -- (hod);
+    \path [line] (hod) -- (approve2);
+    \path [line] (approve2) -- (blockchain);
+    \path [line] (approve2) edge[bend right=40] (erpbot);
+    \path [line] (erpbot) -- (update);
+    \path [line] (erpbot) -- (erp);
+    \path [line] (blockchain) edge[bend right=10] (erpbot);
+    
+    % Background boxes
+    \begin{pgfonlayer}{background}
+        \node[fit=(requestbot)(validate),
+            draw=blue!50, thick, rounded corners, fill=blue!5,
+            label=above:Document Submission] {};
+        \node[fit=(verifybot)(approve1), 
+            draw=green!50, thick, rounded corners, fill=green!5,
+            label=above:Teacher Verification] {};
+        \node[fit=(approvebot)(approve2), 
+            draw=red!50, thick, rounded corners, fill=red!5, 
+            label=above:HoD Approval] {};
+        \node[fit=(erpbot)(update)(erp),
+            draw=purple!50, thick, rounded corners, fill=purple!5,
+            label=above:ERP Integration] {};
+    \end{pgfonlayer}
+\end{tikzpicture}
+
+\end{document} 
